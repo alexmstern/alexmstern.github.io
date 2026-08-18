@@ -13,7 +13,7 @@ export default function SocialLinks() {
         </svg>
       </a>
       <a
-        href="https://github.com/alxstern"
+        href="https://github.com/alexmstern"
         target="_blank"
         rel="noopener noreferrer"
         aria-label="GitHub"
