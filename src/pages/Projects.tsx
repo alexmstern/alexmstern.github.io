@@ -37,6 +37,7 @@ export default function Projects() {
                   )
                 })}
               </div>
+              {project.credit && <p className="project-credit">{project.credit}</p>}
             </div>
           </a>
         ))}
