@@ -25,7 +25,7 @@ export const projects: Project[] = [
     name: 'Feebas Finder',
     description:
       "Calculates a Nintendo DS game's daily RNG seed from two consecutive lottery numbers, then determines which lake tiles will spawn a specific rare species and highlights them on an interactive map. Built for Pokémon Diamond, Pearl, and Platinum.",
-    siteHref: 'https://alexstern.io/projects/feebas-finder',
+    siteHref: 'https://alexstern.io/feebas-finder',
     repoHref: 'https://github.com/alexmstern/feebas-finder',
     icon: feebasFinderIcon,
     tech: ['javascript', 'html', 'css'],
