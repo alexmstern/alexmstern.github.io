@@ -1,3 +1,5 @@
+import profilePhoto from '../assets/profile.jpg'
+
 export default function About() {
   return (
     <section className="page about">
@@ -8,7 +10,7 @@ export default function About() {
             I'm a software engineer at Regions Bank and a recent graduate of the University of Chicago where I studied Mathematics and Computer Science.
           </p>
         </div>
-        <div className="avatar-placeholder" aria-label="Profile photo placeholder" />
+        <img className="avatar" src={profilePhoto} alt="Alex Stern" width={210} height={280} />
       </div>
     </section>
   )

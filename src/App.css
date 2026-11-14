@@ -76,11 +76,12 @@
   align-items: flex-start;
 }
 
-.avatar-placeholder {
+.avatar {
   flex-shrink: 0;
-  width: 120px;
-  height: 120px;
-  border-radius: 22%;
+  width: 210px;
+  height: 280px;
+  border-radius: 16px;
+  object-fit: cover;
   background: var(--border);
 }
 
@@ -97,6 +98,20 @@
 
 .about-text p:last-child {
   margin-bottom: 0;
+}
+
+@media (max-width: 560px) {
+  .about-layout {
+    flex-direction: column-reverse;
+    align-items: center;
+  }
+
+  .avatar {
+    width: 100%;
+    max-width: 280px;
+    height: auto;
+    aspect-ratio: 3 / 4;
+  }
 }
 
 /* Projects */
