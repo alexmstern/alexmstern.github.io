@@ -1,10 +1,31 @@
+import { useRef, useState } from 'react'
 import { projects } from '../data/projects'
 import { techIcons } from '../data/techIcons'
 
 export default function Projects() {
+  const gridRef = useRef<HTMLDivElement>(null)
+  const [active, setActive] = useState(0)
+
+  // On mobile the grid is a horizontal swipe carousel; track which card is showing.
+  const handleScroll = () => {
+    const grid = gridRef.current
+    const cards = grid?.children
+    if (!grid || !cards || cards.length < 2) return
+    const step = (cards[1] as HTMLElement).offsetLeft - (cards[0] as HTMLElement).offsetLeft
+    if (step > 0) setActive(Math.round(grid.scrollLeft / step))
+  }
+
+  const goTo = (index: number) => {
+    const grid = gridRef.current
+    const card = grid?.children[index] as HTMLElement | undefined
+    if (!grid || !card) return
+    const first = grid.children[0] as HTMLElement
+    grid.scrollTo({ left: card.offsetLeft - first.offsetLeft, behavior: 'smooth' })
+  }
+
   return (
     <section className="page projects">
-      <div className="projects-grid">
+      <div className="projects-grid" ref={gridRef} onScroll={handleScroll}>
         {projects.map((project) => (
           <div key={project.name} className="project-card">
             <div className="project-links">
@@ -72,6 +93,17 @@ export default function Projects() {
               })}
             </div>
           </div>
+        ))}
+      </div>
+      <div className="carousel-dots">
+        {projects.map((project, i) => (
+          <button
+            key={project.name}
+            className={`carousel-dot${i === active ? ' active' : ''}`}
+            onClick={() => goTo(i)}
+            aria-label={`Show ${project.name}`}
+            aria-current={i === active}
+          />
         ))}
       </div>
     </section>

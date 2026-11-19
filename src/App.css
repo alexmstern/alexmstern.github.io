@@ -1,13 +1,18 @@
+/* Sticky footer: the layout is at least one screen tall and the content area
+   grows to fill it, so the footer sits at the bottom of the window whenever the
+   content fits. Taller content pushes it down and the page scrolls normally. */
 .layout {
   display: flex;
   flex-direction: column;
   align-items: center;
-  min-height: 100svh;
-  padding: 48px 24px;
+  min-height: 100vh;
+  min-height: 100dvh;
+  padding: 48px 0 calc(32px + env(safe-area-inset-bottom));
   box-sizing: border-box;
 }
 
 .nav {
+  flex-shrink: 0;
   margin-bottom: 48px;
 }
 
@@ -59,14 +64,15 @@
 
 /* Page content */
 .content {
+  flex: 1;
   width: 100%;
-  max-width: 720px;
 }
 
 .page {
   display: block;
-  width: 100%;
-  min-height: 400px;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 0 24px;
 }
 
 /* About */
@@ -100,19 +106,6 @@
   margin-bottom: 0;
 }
 
-@media (max-width: 560px) {
-  .about-layout {
-    flex-direction: column-reverse;
-    align-items: center;
-  }
-
-  .avatar {
-    width: 100%;
-    max-width: 280px;
-    height: auto;
-    aspect-ratio: 3 / 4;
-  }
-}
 
 /* Projects */
 .projects-grid {
@@ -121,14 +114,10 @@
   gap: 16px;
 }
 
-@media (max-width: 560px) {
-  .projects-grid {
-    grid-template-columns: 1fr;
-  }
-}
 
 .project-card {
   position: relative;
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -204,10 +193,11 @@
 
 /* Social footer */
 .social {
+  flex-shrink: 0;
   display: flex;
   gap: 20px;
   justify-content: center;
-  padding: 48px 0 0;
+  padding: 32px 0 0;
 }
 
 .social-link {
@@ -217,4 +207,140 @@
 
 .social-link:hover {
   color: var(--text-h);
+}
+
+/* Carousel dots (mobile only) */
+.carousel-dots {
+  display: none;
+}
+
+/* Mobile */
+@media (max-width: 560px) {
+  :root {
+    font-size: 15px;
+  }
+
+  /* On phones the site is exactly one screen tall with no page scroll */
+  .layout {
+    height: 100vh;
+    height: 100dvh;
+    padding: 24px 0 calc(16px + env(safe-area-inset-bottom));
+    overflow: hidden;
+  }
+
+  .content {
+    min-height: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
+  .nav {
+    margin-bottom: 24px;
+  }
+
+  .social {
+    padding-top: 16px;
+  }
+
+  /* About: photo on top, sized to the screen height so the page never scrolls */
+  .about-layout {
+    flex-direction: column-reverse;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .avatar {
+    width: auto;
+    height: min(40dvh, 360px);
+    aspect-ratio: 3 / 4;
+  }
+
+  .about-name {
+    margin-bottom: 8px;
+  }
+
+  /* Projects: one card at a time, swipe horizontally */
+  .page.projects {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 0;
+  }
+
+  .projects-grid {
+    display: flex;
+    flex: 0 1 auto;
+    min-height: 0;
+    gap: 12px;
+    padding: 0 24px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: 24px;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+  }
+
+  .projects-grid::-webkit-scrollbar {
+    display: none;
+  }
+
+  .project-card {
+    flex: 0 0 100%;
+    gap: 10px;
+    padding: 16px;
+    scroll-snap-align: start;
+    overflow-y: auto;
+  }
+
+  .project-icon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .project-links {
+    top: 14px;
+    right: 14px;
+  }
+
+  .project-desc {
+    font-size: 13px;
+  }
+
+  .project-tech {
+    padding-top: 10px;
+  }
+
+  .carousel-dots {
+    display: flex;
+    flex-shrink: 0;
+    justify-content: center;
+    gap: 4px;
+    padding-top: 12px;
+  }
+
+  .carousel-dot {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+  }
+
+  .carousel-dot::before {
+    content: '';
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--border);
+    transition: background 0.2s ease;
+  }
+
+  .carousel-dot.active::before {
+    background: var(--text-h);
+  }
 }
