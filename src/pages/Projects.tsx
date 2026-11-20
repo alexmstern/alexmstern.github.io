@@ -1,26 +1,43 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { projects } from '../data/projects'
 import { techIcons } from '../data/techIcons'
 
 export default function Projects() {
   const gridRef = useRef<HTMLDivElement>(null)
   const [active, setActive] = useState(0)
+  // Number of snap positions: cards minus the cards visible at once, plus one.
+  // Two cards per view on desktop and one on phones, so two projects on
+  // desktop need no dots at all.
+  const [positions, setPositions] = useState(1)
 
-  // On mobile the grid is a horizontal swipe carousel; track which card is showing.
+  // Distance between the left edges of neighbouring cards
+  const cardStep = () => {
+    const cards = gridRef.current?.children
+    if (!cards || cards.length < 2) return 0
+    return (cards[1] as HTMLElement).offsetLeft - (cards[0] as HTMLElement).offsetLeft
+  }
+
+  useEffect(() => {
+    const measure = () => {
+      const grid = gridRef.current
+      const step = cardStep()
+      if (!grid || step <= 0) return setPositions(1)
+      const maxScroll = grid.scrollWidth - grid.clientWidth
+      setPositions(Math.round(maxScroll / step) + 1)
+    }
+    measure()
+    window.addEventListener('resize', measure)
+    return () => window.removeEventListener('resize', measure)
+  }, [])
+
   const handleScroll = () => {
     const grid = gridRef.current
-    const cards = grid?.children
-    if (!grid || !cards || cards.length < 2) return
-    const step = (cards[1] as HTMLElement).offsetLeft - (cards[0] as HTMLElement).offsetLeft
-    if (step > 0) setActive(Math.round(grid.scrollLeft / step))
+    const step = cardStep()
+    if (grid && step > 0) setActive(Math.round(grid.scrollLeft / step))
   }
 
   const goTo = (index: number) => {
-    const grid = gridRef.current
-    const card = grid?.children[index] as HTMLElement | undefined
-    if (!grid || !card) return
-    const first = grid.children[0] as HTMLElement
-    grid.scrollTo({ left: card.offsetLeft - first.offsetLeft, behavior: 'smooth' })
+    gridRef.current?.scrollTo({ left: index * cardStep(), behavior: 'smooth' })
   }
 
   return (
@@ -95,17 +112,19 @@ export default function Projects() {
           </div>
         ))}
       </div>
-      <div className="carousel-dots">
-        {projects.map((project, i) => (
-          <button
-            key={project.name}
-            className={`carousel-dot${i === active ? ' active' : ''}`}
-            onClick={() => goTo(i)}
-            aria-label={`Show ${project.name}`}
-            aria-current={i === active}
-          />
-        ))}
-      </div>
+      {positions > 1 && (
+        <div className="carousel-dots">
+          {Array.from({ length: positions }, (_, i) => (
+            <button
+              key={i}
+              className={`carousel-dot${i === active ? ' active' : ''}`}
+              onClick={() => goTo(i)}
+              aria-label={`Show ${projects[i]?.name ?? `position ${i + 1}`}`}
+              aria-current={i === active}
+            />
+          ))}
+        </div>
+      )}
     </section>
   )
 }

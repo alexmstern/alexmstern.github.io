@@ -1,4 +1,3 @@
-import { useEffect, useRef } from 'react'
 import { Routes, Route, useNavigate, useLocation } from 'react-router-dom'
 import About from './pages/About'
 import Projects from './pages/Projects'
@@ -32,20 +31,10 @@ function Nav() {
 }
 
 export default function App() {
-  const { pathname } = useLocation()
-  const mainRef = useRef<HTMLElement>(null)
-
-  // Start each page at the top. The window scrolls on desktop; the content
-  // area scrolls on phones (if it ever has to).
-  useEffect(() => {
-    window.scrollTo(0, 0)
-    mainRef.current?.scrollTo(0, 0)
-  }, [pathname])
-
   return (
     <div className="layout">
       <Nav />
-      <main className="content" ref={mainRef}>
+      <main className="content">
         <Routes>
           <Route path="/" element={<About />} />
           <Route path="/projects" element={<Projects />} />

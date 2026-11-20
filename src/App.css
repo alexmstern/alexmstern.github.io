@@ -1,19 +1,22 @@
-/* Sticky footer: the layout is at least one screen tall and the content area
-   grows to fill it, so the footer sits at the bottom of the window whenever the
-   content fits. Taller content pushes it down and the page scrolls normally. */
+/* Every size here comes from the tokens in index.css. The mobile section at the
+   bottom only changes layout, never sizes. */
+
+/* The site is always exactly one screen tall and never scrolls vertically.
+   The root size in index.css is capped by screen height so content fits. */
 .layout {
   display: flex;
   flex-direction: column;
   align-items: center;
-  min-height: 100vh;
-  min-height: 100dvh;
-  padding: 48px 0 calc(32px + env(safe-area-inset-bottom));
+  height: 100vh;
+  height: 100dvh;
+  padding: var(--gutter) 0 calc(var(--space-m) + env(safe-area-inset-bottom));
   box-sizing: border-box;
+  overflow: hidden;
 }
 
 .nav {
   flex-shrink: 0;
-  margin-bottom: 48px;
+  margin-bottom: var(--gutter);
 }
 
 /* Pill toggle */
@@ -29,8 +32,8 @@
   position: absolute;
   top: 3px;
   left: 3px;
-  width: 80px;
-  height: 32px;
+  width: 5rem;
+  height: 2rem;
   border-radius: 999px;
   background: var(--bg);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
@@ -39,18 +42,18 @@
 }
 
 .toggle-thumb.right {
-  left: 83px;
+  left: calc(5rem + 3px);
 }
 
 .toggle-label {
   position: relative;
   z-index: 1;
-  width: 80px;
-  height: 32px;
+  width: 5rem;
+  height: 2rem;
   border: none;
   background: transparent;
   cursor: pointer;
-  font-size: 14px;
+  font-size: var(--fs-ui);
   font-family: var(--font);
   font-weight: 500;
   color: var(--text);
@@ -62,68 +65,111 @@
   color: var(--text-h);
 }
 
-/* Page content */
+/* Page content, centered vertically between the toggle and the footer. Auto
+   margins (rather than justify-content) keep the top in place if content is
+   ever too tall. */
 .content {
+  display: flex;
+  flex-direction: column;
   flex: 1;
   width: 100%;
+  min-height: 0;
+  overflow: hidden;
 }
 
 .page {
-  display: block;
-  max-width: 720px;
-  margin: 0 auto;
-  padding: 0 24px;
+  width: 100%;
+  max-width: 48rem;
+  box-sizing: border-box;
+  margin: auto;
+  padding: 0 var(--gutter);
+}
+
+/* Shared type: titles and body text match on both pages */
+.about-name,
+.project-name {
+  margin: 0 0 var(--space-s);
+  font-size: var(--fs-title);
+  font-weight: 600;
+  color: var(--text-h);
+}
+
+.about-text p,
+.project-desc {
+  margin: 0;
+  font-size: var(--fs-body);
+}
+
+.about-text p + p {
+  margin-top: var(--space-m);
+}
+
+/* Every small glyph is the same size */
+.social-link svg,
+.project-link svg,
+.project-tech-icon {
+  width: var(--icon);
+  height: var(--icon);
 }
 
 /* About */
 .about-layout {
   display: flex;
-  gap: 32px;
+  gap: var(--space-xl);
   align-items: flex-start;
+}
+
+.about-text {
+  flex: 1;
 }
 
 .avatar {
   flex-shrink: 0;
-  width: 210px;
-  height: 280px;
-  border-radius: 16px;
+  width: auto;
+  height: 15.5rem;
+  aspect-ratio: 3 / 4;
+  border-radius: var(--space-m);
   object-fit: cover;
   background: var(--border);
 }
 
-.about-name {
-  margin: 0 0 16px;
-  font-size: 20px;
-  font-weight: 600;
-  color: var(--text-h);
+/* Projects: a horizontal carousel on every screen. Two cards per view on
+   desktop, one on phones. More projects add more swipes, never more height. */
+.page.projects {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  padding: 0;
 }
 
-.about-text p {
-  margin: 0 0 12px;
-}
-
-.about-text p:last-child {
-  margin-bottom: 0;
-}
-
-
-/* Projects */
 .projects-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 16px;
+  display: flex;
+  min-height: 0;
+  gap: var(--space-m);
+  padding: 0 var(--gutter);
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: var(--gutter);
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
 }
 
+.projects-grid::-webkit-scrollbar {
+  display: none;
+}
 
 .project-card {
+  flex: 0 0 calc((100% - var(--space-m)) / 2);
+  scroll-snap-align: start;
   position: relative;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  padding: 20px;
+  gap: var(--space-m);
+  padding: var(--space-l);
   border: 1px solid var(--border);
-  border-radius: 12px;
+  border-radius: var(--space-m);
   color: inherit;
   transition: border-color 0.2s ease;
 }
@@ -133,8 +179,8 @@
 }
 
 .project-icon {
-  width: 48px;
-  height: 48px;
+  width: 3rem;
+  height: 3rem;
   border-radius: 22%;
 }
 
@@ -142,23 +188,11 @@
   flex: 1;
 }
 
-.project-name {
-  margin: 0 0 6px;
-  font-size: 16px;
-  font-weight: 600;
-  color: var(--text-h);
-}
-
-.project-desc {
-  margin: 0;
-  font-size: 14px;
-}
-
 .project-tech {
   display: flex;
   justify-content: center;
-  gap: 12px;
-  padding-top: 12px;
+  gap: var(--space-m);
+  padding-top: var(--space-m);
   border-top: 1px solid var(--border);
 }
 
@@ -167,17 +201,17 @@
 }
 
 .project-credit {
-  margin: 4px 0 0;
-  font-size: 11px;
+  margin: var(--space-s) 0 0;
+  font-size: var(--fs-small);
   opacity: 0.6;
 }
 
 .project-links {
   position: absolute;
-  top: 16px;
-  right: 16px;
+  top: var(--space-l);
+  right: var(--space-l);
   display: flex;
-  gap: 12px;
+  gap: var(--space-m);
 }
 
 .project-link {
@@ -195,9 +229,9 @@
 .social {
   flex-shrink: 0;
   display: flex;
-  gap: 20px;
+  gap: var(--space-l);
   justify-content: center;
-  padding: 32px 0 0;
+  padding: var(--space-m) 0 0;
 }
 
 .social-link {
@@ -209,138 +243,70 @@
   color: var(--text-h);
 }
 
-/* Carousel dots (mobile only) */
+/* Carousel dots, shown only when there is more than one position */
 .carousel-dots {
-  display: none;
+  display: flex;
+  flex-shrink: 0;
+  justify-content: center;
+  gap: var(--space-s);
+  padding-top: var(--space-m);
 }
 
-/* Mobile */
+.carousel-dot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+.carousel-dot::before {
+  content: '';
+  width: var(--space-s);
+  height: var(--space-s);
+  border-radius: 50%;
+  background: var(--border);
+  transition: background 0.2s ease;
+}
+
+.carousel-dot.active::before {
+  background: var(--text-h);
+}
+
+/* Mobile: layout only. Sizes come from the same tokens as desktop. */
 @media (max-width: 560px) {
-  :root {
-    font-size: 15px;
+  /* About: photo stacked on top and sized to the screen height. The page
+     fills the whole area and space-evenly splits the free space equally above
+     the photo, between the photo and the text, and below the text. */
+  .content > .page.about {
+    display: flex;
+    flex-direction: column;
+    flex: 1 0 auto;
   }
 
-  /* On phones the site is exactly one screen tall with no page scroll */
-  .layout {
-    height: 100vh;
-    height: 100dvh;
-    padding: 24px 0 calc(16px + env(safe-area-inset-bottom));
-    overflow: hidden;
-  }
-
-  .content {
-    min-height: 0;
-    overflow-x: hidden;
-    overflow-y: auto;
-  }
-
-  .nav {
-    margin-bottom: 24px;
-  }
-
-  .social {
-    padding-top: 16px;
-  }
-
-  /* About: photo on top, sized to the screen height so the page never scrolls */
   .about-layout {
+    flex: 1;
     flex-direction: column-reverse;
+    justify-content: space-evenly;
     align-items: center;
-    gap: 20px;
+    gap: var(--space-l);
+  }
+
+  .about-text {
+    flex: none;
+    align-self: stretch;
   }
 
   .avatar {
-    width: auto;
-    height: min(40dvh, 360px);
-    aspect-ratio: 3 / 4;
+    height: min(44dvh, 460px);
   }
 
-  .about-name {
-    margin-bottom: 8px;
-  }
-
-  /* Projects: one card at a time, swipe horizontally */
-  .page.projects {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    padding: 0;
-  }
-
-  .projects-grid {
-    display: flex;
-    flex: 0 1 auto;
-    min-height: 0;
-    gap: 12px;
-    padding: 0 24px;
-    overflow-x: auto;
-    overflow-y: hidden;
-    scroll-snap-type: x mandatory;
-    scroll-padding-inline: 24px;
-    overscroll-behavior-x: contain;
-    scrollbar-width: none;
-  }
-
-  .projects-grid::-webkit-scrollbar {
-    display: none;
-  }
-
+  /* Projects: one card per view */
   .project-card {
-    flex: 0 0 100%;
-    gap: 10px;
-    padding: 16px;
-    scroll-snap-align: start;
-    overflow-y: auto;
-  }
-
-  .project-icon {
-    width: 40px;
-    height: 40px;
-  }
-
-  .project-links {
-    top: 14px;
-    right: 14px;
-  }
-
-  .project-desc {
-    font-size: 13px;
-  }
-
-  .project-tech {
-    padding-top: 10px;
-  }
-
-  .carousel-dots {
-    display: flex;
-    flex-shrink: 0;
-    justify-content: center;
-    gap: 4px;
-    padding-top: 12px;
-  }
-
-  .carousel-dot {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 24px;
-    height: 24px;
-    padding: 0;
-    border: none;
-    background: transparent;
-    cursor: pointer;
-  }
-
-  .carousel-dot::before {
-    content: '';
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: var(--border);
-    transition: background 0.2s ease;
-  }
-
-  .carousel-dot.active::before {
-    background: var(--text-h);
+    flex-basis: 100%;
   }
 }

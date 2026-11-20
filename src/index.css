@@ -6,7 +6,26 @@
 
   --font: 'JetBrains Mono', ui-monospace, monospace;
 
-  font: 18px/150% var(--font);
+  /* Sizing system for the whole site. The root size scales with the screen:
+     about 16px on an iPhone SE, growing with width up to 18px on large phones
+     and desktop. It is also capped at 2.6% of the screen height so the site
+     always fits on one screen without scrolling. That cap assumes project
+     descriptions stay about as long as Dream Mist's.
+     Every size in App.css is one of these rem tokens, so the nav, both pages
+     and the footer always grow together, whatever the layout. */
+  --fs-title: 1.35rem; /* your name, project names */
+  --fs-body: 0.92rem;  /* bio, project descriptions */
+  --fs-ui: 0.85rem;    /* toggle labels */
+  --fs-small: 0.7rem;  /* credits */
+  --icon: 1.2rem;      /* every small glyph: footer, tech, card links */
+
+  --space-s: 0.5rem;
+  --space-m: 1rem;
+  --space-l: 1.25rem;
+  --gutter: 1.5rem;    /* screen-edge padding */
+  --space-xl: 2rem;
+
+  font: clamp(12px, min(4.6vw - 1.25px, 2.6dvh), 18px) / 150% var(--font);
   color-scheme: light dark;
   color: var(--text);
   background: var(--bg);
