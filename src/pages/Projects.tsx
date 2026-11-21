@@ -4,11 +4,11 @@ import { techIcons } from '../data/techIcons'
 
 export default function Projects() {
   const gridRef = useRef<HTMLDivElement>(null)
-  const [active, setActive] = useState(0)
-  // Number of snap positions: cards minus the cards visible at once, plus one.
-  // Two cards per view on desktop and one on phones, so two projects on
-  // desktop need no dots at all.
+  // The dots show where you are in the carousel and let mouse users jump
+  // around. There is one dot per scroll position: cards minus the cards
+  // visible at once, plus one. With every card in view there are no dots.
   const [positions, setPositions] = useState(1)
+  const [active, setActive] = useState(0)
 
   // Distance between the left edges of neighbouring cards
   const cardStep = () => {
@@ -17,24 +17,30 @@ export default function Projects() {
     return (cards[1] as HTMLElement).offsetLeft - (cards[0] as HTMLElement).offsetLeft
   }
 
-  useEffect(() => {
-    const measure = () => {
-      const grid = gridRef.current
-      const step = cardStep()
-      if (!grid || step <= 0) return setPositions(1)
-      const maxScroll = grid.scrollWidth - grid.clientWidth
-      setPositions(Math.round(maxScroll / step) + 1)
-    }
-    measure()
-    window.addEventListener('resize', measure)
-    return () => window.removeEventListener('resize', measure)
-  }, [])
-
-  const handleScroll = () => {
+  // Recount positions and the current one from the live layout
+  const sync = () => {
     const grid = gridRef.current
     const step = cardStep()
-    if (grid && step > 0) setActive(Math.round(grid.scrollLeft / step))
+    if (!grid || step <= 0) {
+      setPositions(1)
+      setActive(0)
+      return
+    }
+    const count = Math.round((grid.scrollWidth - grid.clientWidth) / step) + 1
+    setPositions(count)
+    setActive(Math.min(Math.round(grid.scrollLeft / step), count - 1))
   }
+
+  // Re-sync whenever the carousel changes size for any reason: window resize,
+  // switching between one and two cards per view, fonts loading.
+  useEffect(() => {
+    const grid = gridRef.current
+    if (!grid) return
+    const observer = new ResizeObserver(sync)
+    observer.observe(grid)
+    if (grid.firstElementChild) observer.observe(grid.firstElementChild)
+    return () => observer.disconnect()
+  }, [])
 
   const goTo = (index: number) => {
     gridRef.current?.scrollTo({ left: index * cardStep(), behavior: 'smooth' })
@@ -42,7 +48,7 @@ export default function Projects() {
 
   return (
     <section className="page projects">
-      <div className="projects-grid" ref={gridRef} onScroll={handleScroll}>
+      <div className="projects-grid" ref={gridRef} onScroll={sync}>
         {projects.map((project) => (
           <div key={project.name} className="project-card">
             <div className="project-links">

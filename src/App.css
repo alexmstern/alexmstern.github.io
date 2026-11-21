@@ -108,8 +108,14 @@
 .social-link svg,
 .project-link svg,
 .project-tech-icon {
+  display: block;
   width: var(--icon);
   height: var(--icon);
+  /* The icon size is in rem, so it is usually a fractional number of pixels.
+     SVGs clip to their box by default, and the browser's pixel rounding then
+     shaves the edges off logos that touch their box (rounded corners came out
+     square). Let them draw past the box instead. */
+  overflow: visible;
 }
 
 /* About */
@@ -134,7 +140,7 @@
 }
 
 /* Projects: a horizontal carousel on every screen. Two cards per view on
-   desktop, one on phones. More projects add more swipes, never more height. */
+   wide screens, one otherwise. More projects add more swipes, never more height. */
 .page.projects {
   display: flex;
   flex-direction: column;
@@ -153,6 +159,18 @@
   scroll-padding-inline: var(--gutter);
   overscroll-behavior-x: contain;
   scrollbar-width: none;
+  /* Neighbouring cards peek into the side padding as a hint to swipe. Fade
+     them out across that padding instead of cutting them off at the edge.
+     Cards in view start where the padding ends, so they are never faded. */
+  --fade: linear-gradient(
+    to right,
+    transparent,
+    #000 var(--gutter),
+    #000 calc(100% - var(--gutter)),
+    transparent
+  );
+  -webkit-mask-image: var(--fade);
+  mask-image: var(--fade);
 }
 
 .projects-grid::-webkit-scrollbar {
@@ -160,7 +178,7 @@
 }
 
 .project-card {
-  flex: 0 0 calc((100% - var(--space-m)) / 2);
+  flex: 0 0 100%;
   scroll-snap-align: start;
   position: relative;
   box-sizing: border-box;
@@ -178,8 +196,11 @@
   border-color: var(--text);
 }
 
+/* Same height for every project; width follows the image, so square app icons
+   stay square and wide artwork (the Trajectoids animation) keeps its shape. */
 .project-icon {
-  width: 3rem;
+  align-self: flex-start;
+  width: auto;
   height: 3rem;
   border-radius: 22%;
 }
@@ -274,7 +295,15 @@
 }
 
 .carousel-dot.active::before {
-  background: var(--text-h);
+  background: var(--text);
+}
+
+/* Two cards per view only once the page is at its full 48rem width, so cards
+   are never squeezed narrow enough for their text to run off the bottom. */
+@media (min-width: 880px) {
+  .project-card {
+    flex-basis: calc((100% - var(--space-m)) / 2);
+  }
 }
 
 /* Mobile: layout only. Sizes come from the same tokens as desktop. */
@@ -303,10 +332,5 @@
 
   .avatar {
     height: min(44dvh, 460px);
-  }
-
-  /* Projects: one card per view */
-  .project-card {
-    flex-basis: 100%;
   }
 }

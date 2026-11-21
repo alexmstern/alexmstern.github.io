@@ -1,5 +1,6 @@
 import dreamMistIcon from '../assets/dream-mist-icon.png'
 import feebasFinderIcon from '../assets/feebas-finder-icon.png'
+import trajectoidsIcon from '../assets/trajectoids-icon.webp'
 import type { TechIconKey } from './techIcons'
 
 export type Project = {
@@ -17,9 +18,18 @@ export const projects: Project[] = [
     name: 'Dream Mist',
     description:
       "Reimplements Nintendo's discontinued GameSpy-based Wi-Fi Connection protocol in Swift, reviving server-side sync for the Pokémon Black/White and Black 2/White 2 games on real Nintendo DS hardware. Pairs the server with a SwiftUI dashboard for managing synced data, injecting custom content, and applying custom UI skins.",
-    repoHref: 'https://github.com/alxstern/dream-mist',
+    repoHref: 'https://github.com/alexmstern/dream-mist',
     icon: dreamMistIcon,
     tech: ['swift'],
+  },
+  {
+    name: 'Trajectoids',
+    description:
+      'An interactive 3D playground for trajectoids, shapes carved so that they roll along a specific path. Draw any path on the floor and it carves the matching shape out of a sphere, then rolls it along your path. Based on Sobolev et al. (2023).',
+    siteHref: 'https://alexstern.io/trajectoids/',
+    repoHref: 'https://github.com/alexmstern/trajectoids',
+    icon: trajectoidsIcon,
+    tech: ['typescript', 'threejs', 'vite'],
   },
   {
     name: 'Feebas Finder',
