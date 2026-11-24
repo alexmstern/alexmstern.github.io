@@ -53,7 +53,7 @@
   border: none;
   background: transparent;
   cursor: pointer;
-  font-size: var(--fs-ui);
+  font-size: var(--fs-body);
   font-family: var(--font);
   font-weight: 500;
   color: var(--text);
@@ -83,6 +83,20 @@
   box-sizing: border-box;
   margin: auto;
   padding: 0 var(--gutter);
+  animation: page-in 0.25s ease-out;
+}
+
+/* Each page fades in when it appears. The old page leaves instantly, so the
+   real page is always on screen and the toggle responds to every click, even
+   mid-fade: a quick switch just restarts the fade. */
+@keyframes page-in {
+  from { opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page {
+    animation: none;
+  }
 }
 
 /* Shared type: titles and body text match on both pages */
@@ -118,11 +132,12 @@
   overflow: visible;
 }
 
-/* About */
+/* About: text is centered against the photo so the pair reads as one unit
+   rather than the text hanging from the photo's top edge. */
 .about-layout {
   display: flex;
   gap: var(--space-xl);
-  align-items: flex-start;
+  align-items: center;
 }
 
 .about-text {
@@ -224,7 +239,6 @@
 .project-credit {
   margin: var(--space-s) 0 0;
   font-size: var(--fs-small);
-  opacity: 0.6;
 }
 
 .project-links {
@@ -237,13 +251,6 @@
 
 .project-link {
   display: inline-flex;
-  color: var(--text);
-  opacity: 0.6;
-  transition: opacity 0.2s ease;
-}
-
-.project-link:hover {
-  opacity: 1;
 }
 
 /* Social footer */
@@ -255,12 +262,16 @@
   padding: var(--space-m) 0 0;
 }
 
-.social-link {
+/* Every clickable icon rests at the body text color and darkens to the
+   heading color on hover. Tech icons are not links, so they never change. */
+.social-link,
+.project-link {
   color: var(--text);
   transition: color 0.2s ease;
 }
 
-.social-link:hover {
+.social-link:hover,
+.project-link:hover {
   color: var(--text-h);
 }
 

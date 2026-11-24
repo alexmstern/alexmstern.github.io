@@ -8,16 +8,17 @@
 
   /* Sizing system for the whole site. The root size scales with the screen:
      about 16px on an iPhone SE, growing with width up to 18px on large phones
-     and desktop. It is also capped at 2.3% of the screen height so the site
-     always fits on one screen without scrolling. The tallest page (Projects,
-     with a Dream Mist length card and carousel dots) measures 39.8rem, and
-     1 / 0.023 = 43.5rem leaves about 8% to spare. Keep project descriptions
-     at or under Dream Mist's length so that stays true.
+     and laptops, then easing up to 20px between 1280px and 1680px wide so
+     large monitors don't look sparse. It is also capped at 2.3% of the
+     screen height so the site always fits on one screen without scrolling.
+     The tallest page (Projects, with a Dream Mist length card and carousel
+     dots) measures 39.8rem, and 1 / 0.023 = 43.5rem leaves about 8% to spare.
+     Keep project descriptions at or under Dream Mist's length so that stays
+     true.
      Every size in App.css is one of these rem tokens, so the nav, both pages
      and the footer always grow together, whatever the layout. */
   --fs-title: 1.35rem; /* your name, project names */
-  --fs-body: 0.92rem;  /* bio, project descriptions */
-  --fs-ui: 0.85rem;    /* toggle labels */
+  --fs-body: 0.92rem;  /* bio, project descriptions, toggle labels */
   --fs-small: 0.7rem;  /* credits */
   --icon: 1.2rem;      /* every small glyph: footer, tech, card links */
 
@@ -27,7 +28,7 @@
   --gutter: 1.5rem;    /* screen-edge padding */
   --space-xl: 2rem;
 
-  font: clamp(12px, min(4.6vw - 1.25px, 2.3dvh), 18px) / 150% var(--font);
+  font: clamp(12px, min(4.6vw - 1.25px, 2.3dvh, max(18px, 0.5vw + 11.6px)), 20px) / 150% var(--font);
   color-scheme: light dark;
   color: var(--text);
   background: var(--bg);
